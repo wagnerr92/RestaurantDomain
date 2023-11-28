@@ -12,10 +12,20 @@ final class RestaurantDomainTests: XCTestCase {
 
     func test_initializer_remoteRestaurantLoader_and_validate_urlRequest() throws {
         let anyURL = try XCTUnwrap(URL(string: "https://comitando.com.br"))
-        let sut = RemoteRestaurantLoader(url: anyURL)
+        let client = NetworkClientSpy()
+        let sut = RemoteRestaurantLoader(url: anyURL, networkClient: client)
         
         sut.load()
         
-        XCTAssert((NetworkClient.shared.urlRequest != nil))
+        XCTAssertEqual(client.urlRequest, anyURL)
     }
+}
+
+final class NetworkClientSpy: NetworkClient{
+    private(set) var urlRequest: URL?
+    
+    func request(from url: URL) {
+        urlRequest = url
+    }
+    
 }

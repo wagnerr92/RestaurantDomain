@@ -24,7 +24,7 @@
 import Foundation
 
 protocol NetworkClient {
-    func request(from url: URL)
+    func request(from url: URL, completion: @escaping (Error) -> Void)
 }
 
 final class RemoteRestaurantLoader{
@@ -36,7 +36,9 @@ final class RemoteRestaurantLoader{
         self.networkClient = networkClient
     }
     
-    func load() {
-        networkClient.request(from: url)
+    func load(completion: @escaping (Error) -> Void) {
+        networkClient.request(from: url){ error in
+            completion(error)
+        }
     }
 }
